@@ -1,0 +1,45 @@
+#file-structure {
+    cursor: pointer;
+}
+span {
+    display: flex;
+    align-items: center;
+}
+.container {
+    display: flex;
+}
+.container:hover > .file-name {
+    color: #2195f3;
+}
+.container:hover > .file-logo {
+    filter: invert(1) sepia(2) saturate(5) hue-rotate(175deg);
+}
+#menu {
+    margin: 0;
+    list-style-type: none;
+    padding: unset;
+    text-align: center;
+    background: #ffffff;
+    width: 100px;
+    color: #444444;
+    border-radius: 3px;
+    box-shadow: 0px 3px 6px 0px #444444;
+}
+.menu-item {
+    display: flex;
+    height: 28px;
+}
+.menu-item:hover {
+    background: #44444426;
+}
+.context-menu-img {
+    margin-left: 5px;
+    margin-right: 3px;
+}
+.file-name {
+    margin-left: 3px;
+    color: #444444;
+}
+#context-menu {
+    position: absolute;
+}
