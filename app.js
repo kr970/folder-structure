@@ -2,34 +2,49 @@ let fileStructure = [
   {
     isOpen: true,
     extension: 'folder',
-    name: 'Pictures',
+    name: 'Documents',
     content: [
       {
-        extension: '.png',
-        name: 'logo'
+        extension: '.pdf',
+        name: 'CV'
       },
       {
         isOpen: false,
         extension: 'folder',
-        name: 'Vacationc',
-        content: [{extension: '.jpeg', name: 'spaing'}]
+        name: 'Bank information',
+        content: [{extension: '.doc', name: 'requisites'}]
       }
     ]
   },
   {
     isOpen: false,
     extension: 'folder',
-    name: 'Desktop',
+    name: 'Pictures',
     content: [
-      {isOpen: false,extension: 'folder', name: 'screenshots', content: []}
+      {isOpen: false,extension: 'folder', name: 'Nature', content: []}
     ]
+  },
+  {
+    isOpen: false,
+    extension: 'folder',
+    name: 'Videos',
+    content: [
+      {isOpen: false,extension: 'folder', name: 'Films', content: []}
+    ]
+  },
+  {
+    isOpen: false,
+    extension: 'folder',
+    name: 'Desktop',
+    content: []
   },
   {
     isOpen: false,
     extension: 'folder',
     name: 'Downloads',
     content: [
-      {extension: '.txt', name: 'credentials'}
+      {extension: '.jpg', name: 'icons'},
+      {extension: '.jpg', name: 'img_1010'}
     ]
   }
 ];
@@ -37,8 +52,44 @@ let fileStructure = [
 
 const divFileStructure = document.getElementById('file-structure');
 const contextMenu = document.getElementById('context-menu');
+const renameOption = document.getElementById('rename');
+const deleteOption = document.getElementById('delete');
+let currentItem;
+let name;
+
+renameOption.addEventListener('click', (e) => renameFile(e, fileStructure));
+
+function enterFileName(fileStructureItems, pastName) {
+    for (let i = 0; i < fileStructureItems.length; i++) {
+      if (fileStructureItems[i].name === pastName) {
+        fileStructureItems[i].name = name;
+        return;
+      }
+      if (fileStructureItems[i].content && fileStructureItems[i].content.length > 0) {
+        enterFileName(fileStructureItems[i].content, pastName)
+      }
+    }
+}
+
+function renameFile(e, fileStructureItems) {
+  let prevName = currentItem.value;
+  currentItem.removeAttribute('readonly');
+  currentItem.focus();
+  contextMenu.setAttribute('hidden', 'hidden');
+  const onInput = () => name = currentItem.value;
+  currentItem.addEventListener('input', onInput);
+  const onBlur = () => {
+    enterFileName(fileStructureItems, prevName);
+    deleteFileStructure();
+    drawFileStructure(fileStructure,divFileStructure,1);
+    currentItem.removeEventListener('input', onInput);
+    currentItem.removeEventListener('blur', onBlur);
+  };
+  currentItem.addEventListener('blur', onBlur);
+}
 
 function handleContextMenu(e) {
+  currentItem = e.target;
   e.stopPropagation();
   if(e.button === 2) {
     if(contextMenu.hasAttribute('hidden')) {
@@ -47,9 +98,11 @@ function handleContextMenu(e) {
       contextMenu.style.top = e.clientY + 'px';
     } else {
       contextMenu.setAttribute('hidden','hidden');
+      currentItem = null;
     }
   } else {
     contextMenu.setAttribute('hidden','hidden');
+    currentItem = null;
   }
 }
 
@@ -92,14 +145,15 @@ function createContainerWithFile(fileStructureName, fileStructure, eventListener
   if (eventListener) {
     container.addEventListener('click', (e) => eventListener(e, fileStructure));
   }
-  let span = document.createElement('span');
-  span.innerHTML = fileStructureName;
-  span.classList.add('file-name');
+  let input = document.createElement('input');
+  input.value = fileStructureName;
+  input.classList.add('file-name');
+  input.setAttribute('readonly', 'readonly');
   let img = document.createElement('img');
   img.src = imageSrc;
   img.classList.add('file-logo');
   container.append(img);
-  container.append(span);
+  container.append(input);
   doIndent(container, folderNesting);
   return container;
 }
