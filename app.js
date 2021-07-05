@@ -54,10 +54,12 @@ const divFileStructure = document.getElementById('file-structure');
 const contextMenu = document.getElementById('context-menu');
 const renameOption = document.getElementById('rename');
 const deleteOption = document.getElementById('delete');
+const canvas = document.getElementById('canvas');
 let currentItem;
 let name;
 
 renameOption.addEventListener('click', (e) => renameFile(e, fileStructure));
+deleteOption.addEventListener('click', () => deleteFile(fileStructure));
 
 function enterFileName(fileStructureItems, pastName) {
     for (let i = 0; i < fileStructureItems.length; i++) {
@@ -76,6 +78,7 @@ function renameFile(e, fileStructureItems) {
   currentItem.removeAttribute('readonly');
   currentItem.focus();
   contextMenu.setAttribute('hidden', 'hidden');
+  name = currentItem.value;
   const onInput = () => name = currentItem.value;
   currentItem.addEventListener('input', onInput);
   const onBlur = () => {
@@ -86,6 +89,21 @@ function renameFile(e, fileStructureItems) {
     currentItem.removeEventListener('blur', onBlur);
   };
   currentItem.addEventListener('blur', onBlur);
+}
+
+function deleteFile(fileStructureItems) {
+  contextMenu.setAttribute('hidden', 'hidden');
+  for (let i = 0; i < fileStructureItems.length; i++) {
+    if (fileStructureItems[i].name === currentItem.value) {
+      fileStructureItems.splice(i, 1);
+      deleteFileStructure();
+      drawFileStructure(fileStructure,divFileStructure,1);
+      return;
+    }
+    if (fileStructureItems[i].content && fileStructureItems[i].content.length > 0) {
+      deleteFile(fileStructureItems[i].content)
+    }
+  }
 }
 
 function handleContextMenu(e) {

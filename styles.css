@@ -23,9 +23,10 @@ span {
     width: 100px;
     color: #444444;
     border-radius: 3px;
-    box-shadow: 0px 3px 6px 0px #444444;
+    box-shadow: 0 3px 6px 0 #444444;
 }
 .menu-item {
+    cursor: pointer;
     display: flex;
     height: 28px;
 }
